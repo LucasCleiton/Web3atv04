@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize('web3atv04', 'aluno', 'ifpecjbg', {
+const sequelize = new Sequelize('web3atv05', 'root', ' ', {
     dialect: 'mysql',
     host: 'localhost',
 });
@@ -19,9 +19,30 @@ sequelize.authenticate()
 
 ////tabelas do banco
 
-/// Categoria
-const Categoria = sequelize.define('categoria', {
-    id: {
+/// User
+const user = sequelize.define('user', {
+    id_user: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    nome: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    data_ingresso: {
+        type: Sequelize.DATE,
+        allowNull: true
+    },
+    ultimoip: {
+        type: Sequelize.STRING,
+        allowNull: true
+    }
+});
+
+/// Board
+const board = sequelize.define('board', {
+    id_board: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -31,7 +52,7 @@ const Categoria = sequelize.define('categoria', {
         allowNull: false
 
     },
-    descricao: {
+    mensagem: {
         type: Sequelize.TEXT,
         allowNull: false
     }
@@ -39,123 +60,104 @@ const Categoria = sequelize.define('categoria', {
 
 });
 
-/// Produtos
-const Produtos = sequelize.define('produtos', {
-    id: {
+/// Thread
+const thread = sequelize.define('thread', {
+    id_thread: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         utoIncrement: true
     },
-    nome: {
+    titulo: {
         type: Sequelize.STRING,
         allowNull: true
     },
-    descricao: {
+    mensagem: {
         type: Sequelize.TEXT,
         allowNull: true
     },
-    preco: {
-        type: Sequelize.DECIMAL(10, 2),
+    arquivo: {
+        type: Sequelize.TEXT,
         allowNull: true
     },
-    id_categoria: {
+    board_idboard: {
         type: Sequelize.INTEGER,
         references: {
-            model: 'categoria',
-            key: 'id'
+            model: 'board',
+            key: 'id_board'
         }
     },
-    disponivel: {
-        type: Sequelize.BOOLEAN,
-        allowNull: true
-    }
-
-
-
-
-});
-
-/// Clientes
-const Clientes = sequelize.define('clientes', {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    nome: {
-        type: Sequelize.STRING,
-        allowNull: true
-    },
-    email: {
-        type: Sequelize.STRING,
-        allowNull: true
-    },
-    endereco: {
-        type: Sequelize.STRING,
-        allowNull: true
-    },
-    telefone: {
-        type: Sequelize.STRING,
-        allowNull: true
-
-    }
-});
-
-/// Pedidos
-const Pedidos = sequelize.define('pedidos', {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    id_cliente: {
+    user_iduser: {
         type: Sequelize.INTEGER,
         references: {
-            model: 'clientes',
-            key: 'id'
+            model: 'user',
+            key: 'id_user'
         }
-    },
-    data_pedido: {
+    }
+    ,
+    data_criacao: {
         type: Sequelize.DATE,
         allowNull: true
     },
-    status: {
+    ip: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    clicks: {
+        type: Sequelize.BIGINT,
+        allowNull: true
+    }
+
+
+
+
+
+});
+
+/// answer
+const answer = sequelize.define('answer', {
+    id_aswer: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        utoIncrement: true
+    },
+    mensagem: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
+    arquivo: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    arquivo: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    thread_idthread: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'thread',
+            key: 'id_thread'
+        }
+    },
+    user_iduser: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: 'user',
+            key: 'id_user'
+        }
+    }
+    ,
+    data_criacao: {
+        type: Sequelize.DATE,
+        allowNull: true
+    },
+    ip: {
         type: Sequelize.STRING,
         allowNull: true
     }
-});
 
-/// ItensPedido 
-const Itenspedido = sequelize.define('itenspedido', {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    id_pedido: {
-        type: Sequelize.INTEGER,
-        references: {
-            model: 'pedidos',
-            key: 'id'
-        }
 
-    },
-    id_produto: {
-        type: Sequelize.INTEGER,
-        references: {
-            model: 'produtos',
-            key: 'id'
-        }
-    },
-    quantidade: {
-        type: Sequelize.INTEGER,
-        allowNull: true
-    },
-    preco_unitario: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: true
 
-    }
 });
 
 
@@ -173,9 +175,8 @@ sequelize.sync()
 
 module.exports = {
     sequelize,
-    Categoria,
-    Produtos,
-    Clientes,
-    Pedidos,
-    Itenspedido
+    board,
+    thread,
+    answer,
+    user
 }
